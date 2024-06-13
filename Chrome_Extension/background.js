@@ -4,7 +4,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const videoId = extractVideoId(videoUrl);
         if (videoId) {
             console.log('Sending request to transcribe video:', videoUrl); // Log the request to transcribe the video
-            fetch(`http://127.0.0.1:8000/transcribe?video_url=${encodeURIComponent(videoUrl)}`)
+            fetch(`https://youtube-video-to-text-chrome-extension.onrender.com/transcribe?video_url=${encodeURIComponent(videoUrl)}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log('Received transcript data:', data); // Log the received transcript data
@@ -28,7 +28,4 @@ function extractVideoId(url) {
 }
 
 
-function extractVideoId(url) {
-    const videoIdMatch = url.match(/[?&]v=([^&]+)/);
-    return videoIdMatch ? videoIdMatch[1] : null;
-}
+

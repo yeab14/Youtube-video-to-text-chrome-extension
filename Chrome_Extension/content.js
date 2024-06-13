@@ -64,6 +64,37 @@ function createTranscriptionPopup(transcript) {
             popup.style.display = 'none';
         });
         popup.appendChild(hideButton);
+
+        // Rate Us - 5 stars widget
+        const rateUsContainer = document.createElement('div');
+        rateUsContainer.style.marginTop = '20px';  // Added space above the widget
+
+        const rateUsText = document.createElement('span');
+        rateUsText.innerText = 'Rate Us: ';
+        rateUsText.style.fontSize = '20px';  // Increased font size
+        rateUsText.style.fontWeight = 'bold';  // Bold font weight
+        rateUsText.style.color = '#dc3545';  // Red color for text
+
+        const starIcons = [];
+        for (let i = 1; i <= 5; i++) {
+            const starIcon = document.createElement('span');
+            starIcon.innerHTML = '&#9733;';  // Unicode star character
+            starIcon.style.fontSize = '28px';  // Increased star size
+            starIcon.style.color = '#dc3545';  // Red color for stars
+            starIcon.style.cursor = 'pointer';
+            starIcon.addEventListener('click', () => {
+                if (i >= 4) {
+                    window.open('https://www.google.com', '_blank');
+                } else {
+                    window.open('https://www.youtube.com/hashtag/funnyvideo', '_blank');
+                }
+            });
+            starIcons.push(starIcon);
+            rateUsContainer.appendChild(starIcon);
+        }
+
+        rateUsContainer.prepend(rateUsText);
+        popup.appendChild(rateUsContainer);
     } else {
         // Update existing popup with new transcript
         const transcriptText = popup.querySelector('.transcript-text');
@@ -152,6 +183,7 @@ if (!window.hasRun) {
     window.hasRun = true;
     initializeContentScript();
 }
+
 
 
 
