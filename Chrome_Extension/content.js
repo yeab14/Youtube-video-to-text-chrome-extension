@@ -5,32 +5,38 @@ function createTranscriptionPopup(transcript) {
         popup = document.createElement('div');
         popup.id = 'transcription-popup';
         popup.style.position = 'fixed';
-        popup.style.top = '10px';
-        popup.style.right = '10px';
+        popup.style.top = '50px';  // Adjusted top position for better visibility
+        popup.style.right = '50px';  // Adjusted right position for better alignment
         popup.style.zIndex = '9999';
-        popup.style.padding = '10px';
-        popup.style.backgroundColor = '#FFFFFF';
-        popup.style.border = '1px solid #000000';
-        popup.style.borderRadius = '5px';
-        popup.style.width = '300px';
-        popup.style.height = '400px';
-        popup.style.overflowY = 'scroll';
-        
+        popup.style.padding = '20px';
+        popup.style.backgroundColor = '#f0f0f0';  // Light gray background
+        popup.style.border = '2px solid #dc3545';  // Red border
+        popup.style.borderRadius = '10px';
+        popup.style.width = '400px';  // Increased width for better readability
+        popup.style.maxHeight = '80vh';  // Limited maximum height for better scrolling
+        popup.style.overflowY = 'auto';  // Added auto scrolling
+        popup.style.boxShadow = '0px 4px 10px rgba(0, 0, 0, 0.1)';  // Shadow effect
+        popup.style.fontFamily = 'Arial, sans-serif';  // Set font family
+
         document.body.appendChild(popup);
 
-        popup.innerText = transcript;
-        popup.style.display = 'block';
+        // Styling for the transcript text
+        const transcriptText = document.createElement('div');
+        transcriptText.innerText = transcript;
+        transcriptText.style.fontSize = '18px';  // Increased font size
+        transcriptText.style.lineHeight = '1.6';  // Improved line height
+        transcriptText.style.marginBottom = '20px';  // Added space below text
+        popup.appendChild(transcriptText);
 
-        // Add copy button
+        // Stylish copy button
         const copyButton = document.createElement('button');
         copyButton.innerText = 'Copy Text';
-        copyButton.style.marginTop = '10px';
-        copyButton.style.marginRight = '5px';
-        copyButton.style.padding = '5px 10px';
-        copyButton.style.backgroundColor = '#4CAF50';
-        copyButton.style.color = '#FFFFFF';
+        copyButton.style.padding = '12px 24px';  // Increased padding
+        copyButton.style.marginRight = '10px';
+        copyButton.style.backgroundColor = '#28a745';  // Green color
+        copyButton.style.color = '#ffffff';  // White text
         copyButton.style.border = 'none';
-        copyButton.style.borderRadius = '3px';
+        copyButton.style.borderRadius = '5px';
         copyButton.style.cursor = 'pointer';
         copyButton.addEventListener('click', () => {
             navigator.clipboard.writeText(transcript)
@@ -45,22 +51,25 @@ function createTranscriptionPopup(transcript) {
         });
         popup.appendChild(copyButton);
 
-        // Add auto-hide button
+        // Stylish hide button
         const hideButton = document.createElement('button');
         hideButton.innerText = 'Hide';
-        hideButton.style.marginTop = '10px';
-        hideButton.style.padding = '5px 10px';
-        hideButton.style.backgroundColor = '#FF0000';
-        hideButton.style.color = '#FFFFFF';
+        hideButton.style.padding = '12px 24px';  // Increased padding
+        hideButton.style.backgroundColor = '#dc3545';  // Red color
+        hideButton.style.color = '#ffffff';  // White text
         hideButton.style.border = 'none';
-        hideButton.style.borderRadius = '3px';
+        hideButton.style.borderRadius = '5px';
         hideButton.style.cursor = 'pointer';
         hideButton.addEventListener('click', () => {
             popup.style.display = 'none';
         });
         popup.appendChild(hideButton);
     } else {
-        popup.innerText = transcript;
+        // Update existing popup with new transcript
+        const transcriptText = popup.querySelector('.transcript-text');
+        if (transcriptText) {
+            transcriptText.innerText = transcript;
+        }
         popup.style.display = 'block';
     }
 }
@@ -97,15 +106,26 @@ function addTranscriptionButton() {
     button.id = 'transcription-button';
     button.innerText = 'Transcribe Video';
     button.style.position = 'fixed';
-    button.style.top = '50px';
-    button.style.right = '10px';
+    button.style.top = '20px';  // Adjusted top position for better visibility
+    button.style.right = '20px';  // Adjusted right position for better alignment
     button.style.zIndex = '9999';
-    button.style.padding = '10px 20px';
-    button.style.backgroundColor = '#FF0000';
-    button.style.color = '#FFFFFF';
+    button.style.padding = '15px 30px';
+    button.style.backgroundColor = '#dc3545';  // Red color
+    button.style.color = '#ffffff';  // White text
     button.style.border = 'none';
-    button.style.borderRadius = '5px';
+    button.style.borderRadius = '8px';
+    button.style.fontFamily = 'Arial, sans-serif';  // Set font family
+    button.style.fontSize = '16px';  // Font size adjustment
     button.style.cursor = 'pointer';
+    button.style.transition = 'background-color 0.3s ease';  // Hover effect
+
+    button.addEventListener('mouseenter', () => {
+        button.style.backgroundColor = '#c82333';  // Darker red on hover
+    });
+
+    button.addEventListener('mouseleave', () => {
+        button.style.backgroundColor = '#dc3545';  // Restore original red after hover
+    });
 
     document.body.appendChild(button);
 
@@ -132,6 +152,8 @@ if (!window.hasRun) {
     window.hasRun = true;
     initializeContentScript();
 }
+
+
 
 
 
