@@ -10,9 +10,9 @@ app = FastAPI()
 
 # Origin of chrome extension or other allowed origins
 origins = [
-    "chrome-extension://jnajkooifiafgeakflfdklgiedbffmnn",
-    "http://localhost:8501", 
+    "*",
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
