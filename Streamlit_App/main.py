@@ -1,5 +1,6 @@
 import logging
 import re
+import os
 from youtube_transcript_api import YouTubeTranscriptApi, CouldNotRetrieveTranscript, TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,3 +52,9 @@ def transcribe(video_url: str = Query(..., description="The YouTube video URL"))
     if not video_id:
         raise HTTPException(status_code=400, detail="Invalid YouTube URL")
     return extract_transcript_data(video_id)
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
