@@ -15,10 +15,54 @@ function createTranscriptionPopup(transcript) {
         popup.style.width = '300px';
         popup.style.height = '400px';
         popup.style.overflowY = 'scroll';
+        
         document.body.appendChild(popup);
+
+        popup.innerText = transcript;
+        popup.style.display = 'block';
+
+        // Add copy button
+        const copyButton = document.createElement('button');
+        copyButton.innerText = 'Copy Text';
+        copyButton.style.marginTop = '10px';
+        copyButton.style.marginRight = '5px';
+        copyButton.style.padding = '5px 10px';
+        copyButton.style.backgroundColor = '#4CAF50';
+        copyButton.style.color = '#FFFFFF';
+        copyButton.style.border = 'none';
+        copyButton.style.borderRadius = '3px';
+        copyButton.style.cursor = 'pointer';
+        copyButton.addEventListener('click', () => {
+            navigator.clipboard.writeText(transcript)
+                .then(() => {
+                    console.log('Text copied to clipboard');
+                    // Optionally show a message or update button state
+                })
+                .catch(err => {
+                    console.error('Unable to copy text: ', err);
+                    // Handle error
+                });
+        });
+        popup.appendChild(copyButton);
+
+        // Add auto-hide button
+        const hideButton = document.createElement('button');
+        hideButton.innerText = 'Hide';
+        hideButton.style.marginTop = '10px';
+        hideButton.style.padding = '5px 10px';
+        hideButton.style.backgroundColor = '#FF0000';
+        hideButton.style.color = '#FFFFFF';
+        hideButton.style.border = 'none';
+        hideButton.style.borderRadius = '3px';
+        hideButton.style.cursor = 'pointer';
+        hideButton.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+        popup.appendChild(hideButton);
+    } else {
+        popup.innerText = transcript;
+        popup.style.display = 'block';
     }
-    popup.innerText = transcript;
-    popup.style.display = 'block';
 }
 
 // Function to transcribe the video
