@@ -1,0 +1,5 @@
+streamlit
+logger
+youtube_transcript_api
+textwrap3
+-e .

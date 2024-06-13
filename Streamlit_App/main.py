@@ -1,0 +1,53 @@
+import logging
+import re
+from youtube_transcript_api import YouTubeTranscriptApi, CouldNotRetrieveTranscript, TranscriptsDisabled, NoTranscriptFound, VideoUnavailable
+from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
+
+# Configure CORS
+app = FastAPI()
+
+# Origin of chrome extension or other allowed origins
+origins = [
+    "chrome-extension://jnajkooifiafgeakflfdklgiedbffmnn",
+    "http://localhost:8501", 
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+logging.basicConfig(level=logging.INFO)
+
+# Function to extract video ID from URL
+def extract_video_id(url: str):
+    video_id_match = re.search(r"(?:v=|\/)([0-9A-Za-z_-]{11}).*", url)
+    return video_id_match.group(1) if video_id_match else None
+
+# Function to extract transcript data
+def extract_transcript_data(youtube_video_id: str):
+    try:
+        transcript = YouTubeTranscriptApi.get_transcript(youtube_video_id)
+        transcript_text = " ".join([i["text"] for i in transcript])
+        return {"transcript": transcript_text}
+    except VideoUnavailable:
+        raise HTTPException(status_code=404, detail="Video is unavailable")
+    except NoTranscriptFound:
+        raise HTTPException(status_code=404, detail="No transcript found for this video")
+    except CouldNotRetrieveTranscript:
+        raise HTTPException(status_code=500, detail="Could not retrieve the transcript")
+    except TranscriptsDisabled:
+        raise HTTPException(status_code=403, detail="Transcripts are disabled for this video")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
+
+@app.get("/transcribe")
+def transcribe(video_url: str = Query(..., description="The YouTube video URL")):
+    video_id = extract_video_id(video_url)
+    if not video_id:
+        raise HTTPException(status_code=400, detail="Invalid YouTube URL")
+    return extract_transcript_data(video_id)
