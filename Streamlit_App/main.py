@@ -9,13 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 # Origin of chrome extension or other allowed origins
-origin = [
+origins = [
     "*",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origin,
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
