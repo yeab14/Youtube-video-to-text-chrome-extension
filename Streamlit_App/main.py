@@ -13,7 +13,6 @@ origins = [
     "*",
 ]
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -31,20 +30,24 @@ def extract_video_id(url: str):
 
 # Function to extract transcript data
 def extract_transcript_data(youtube_video_id: str):
-    try:
-        transcript = YouTubeTranscriptApi.get_transcript(youtube_video_id)
-        transcript_text = " ".join([i["text"] for i in transcript])
-        return {"transcript": transcript_text}
-    except VideoUnavailable:
-        raise HTTPException(status_code=404, detail="Video is unavailable")
-    except NoTranscriptFound:
-        raise HTTPException(status_code=404, detail="No transcript found for this video")
-    except CouldNotRetrieveTranscript:
-        raise HTTPException(status_code=500, detail="Could not retrieve the transcript")
-    except TranscriptsDisabled:
-        raise HTTPException(status_code=403, detail="Transcripts are disabled for this video")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
+    language_codes = ["en", "de", "es", "fr", "ru"]  # English, German, Spanish, French, Russian
+    transcript_text = ""
+    
+    for code in language_codes:
+        try:
+            transcript = YouTubeTranscriptApi.get_transcript(youtube_video_id, languages=[code])
+            transcript_text = " ".join([i["text"] for i in transcript])
+            return {"transcript": transcript_text, "language": code}
+        except (NoTranscriptFound, CouldNotRetrieveTranscript):
+            continue  # Try the next language
+        except VideoUnavailable:
+            raise HTTPException(status_code=404, detail="Video is unavailable")
+        except TranscriptsDisabled:
+            raise HTTPException(status_code=403, detail="Transcripts are disabled for this video")
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"An error occurred: {e}")
+
+    raise HTTPException(status_code=404, detail="No transcript found for this video in the supported languages")
 
 @app.get("/transcribe")
 def transcribe(video_url: str = Query(..., description="The YouTube video URL")):
@@ -57,4 +60,5 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(app, host="0.0.0.0", port=port)
+
 
